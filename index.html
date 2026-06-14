@@ -82,6 +82,14 @@
   .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
   .timeline-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1.5px solid var(--line)}
   .note{font-size:13px;color:var(--muted);margin:4px 0 0;font-weight:500}
+  .pet-head{display:flex;align-items:flex-start;gap:11px}
+  .pet-emoji{font-size:30px;line-height:1.1;flex-shrink:0}
+  .pet-namecol{flex:1;min-width:0}
+  .pet-name{font-weight:700;font-size:16px;line-height:1.3;word-break:break-word}
+  .pet-meta{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:3px;display:flex;flex-wrap:wrap;align-items:center;gap:3px 5px}
+  .pet-meta .nw{white-space:nowrap}
+  .pet-meta .sep{color:var(--line);font-weight:700}
+  .pet-acts{display:flex;gap:2px;flex-shrink:0}
   .hidden{display:none}
   .topbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .petbar{display:flex;align-items:center;gap:10px;background:var(--soft);border:1.5px solid var(--line);border-left:6px solid var(--sage);border-radius:18px;padding:11px 15px;margin-bottom:16px}
@@ -95,7 +103,19 @@
   .remind-x{background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:2px 4px;border-radius:8px}
   .remind-x:hover{background:rgba(94,75,60,.08)}
   .petbar .switch{margin-left:auto;width:auto;min-width:140px}
-  @media(max-width:480px){h1{font-size:20px}.wrap{padding:16px 12px 70px}}
+  @media(max-width:480px){
+    h1{font-size:19px}
+    .wrap{padding:16px 12px 80px}
+    .pet-grid{grid-template-columns:1fr;gap:12px}
+    .card{padding:15px 16px;border-radius:18px}
+    .pet-name{font-size:17px}
+    .pet-meta{font-size:13px}
+    .note{font-size:13.5px}
+    .pet-emoji{font-size:32px}
+    .tab{font-size:12.5px;padding:9px 5px}
+    .metric .val{font-size:19px}
+    header{padding:14px 16px;border-radius:20px}
+  }
   .gbtn{display:inline-flex;align-items:center;gap:7px}
   .avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;border:1.5px solid var(--line)}
   #loginScreen{position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:20px;
@@ -446,16 +466,17 @@ function petCard(p){
   const ref = isMemo ? p.passed : null;
   const ha = p.bd ? humanAge(p.bd, p.species, ref) : null;
   const ageLbl = p.bd ? age(p.bd, ref) : null;
+  let metaParts=[`<span class="nw">${esc(p.species)}</span>`];
+  if(p.sex) metaParts.push(`<span class="nw">${sexLabel(p.sex)}</span>`);
+  if(p.breed) metaParts.push(`<span class="nw">${esc(p.breed)}</span>`);
   let body = `<div class="card pet-card ${isMemo?'memo':''} ${p.id===pid?'active':''}" onclick="selectPet('${p.id}')">
-    <div class="flex between">
-      <div class="flex">
-        <span style="font-size:30px;${isMemo?'filter:grayscale(.3);opacity:.85':''}">${p.emoji}</span>
-        <div>
-          <div style="font-weight:700;font-size:16px">${esc(p.name)}${isMemo?' <span style="font-size:14px">🕊️</span>':''}</div>
-          <div style="font-size:12px;color:var(--muted)">${esc(p.species)}${p.sex?' · '+sexLabel(p.sex):''}${p.breed?' · '+esc(p.breed):''}</div>
-        </div>
+    <div class="pet-head">
+      <span class="pet-emoji" style="${isMemo?'filter:grayscale(.3);opacity:.85':''}">${p.emoji}</span>
+      <div class="pet-namecol">
+        <div class="pet-name">${esc(p.name)}${isMemo?' <span style="font-size:15px">🕊️</span>':''}</div>
+        <div class="pet-meta">${metaParts.join('<span class="sep">·</span>')}</div>
       </div>
-      <div class="flex" style="gap:2px">
+      <div class="pet-acts">
         <button class="del" onclick="event.stopPropagation();editPet('${p.id}')">✏️</button>
         <button class="del" onclick="event.stopPropagation();delPet('${p.id}')">🗑</button>
       </div>
