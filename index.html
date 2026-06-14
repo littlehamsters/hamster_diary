@@ -53,7 +53,7 @@
   .tab{flex:1;border:none;background:transparent;border-radius:13px;padding:9px 8px;cursor:pointer;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap;transition:all .15s}
   .tab.active{background:var(--sage);color:#3a5021;box-shadow:0 2px 0 var(--sage-d)}
   .card{background:var(--card);border-radius:20px;padding:16px 18px;box-shadow:var(--shadow);margin-bottom:14px;border:1.5px solid var(--line)}
-  .pet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+  .pet-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:16px}
   .pet-card{cursor:pointer;border:2.5px solid transparent;transition:border .15s,transform .12s}
   .pet-card:hover{transform:translateY(-2px)}
   .pet-card.active{border-color:var(--sage)}
@@ -103,6 +103,9 @@
   .remind-x{background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:2px 4px;border-radius:8px}
   .remind-x:hover{background:rgba(94,75,60,.08)}
   .petbar .switch{margin-left:auto;width:auto;min-width:140px}
+  @media(max-width:600px){
+    .pet-grid{grid-template-columns:1fr}
+  }
   @media(max-width:480px){
     h1{font-size:19px}
     .wrap{padding:16px 12px 80px}
