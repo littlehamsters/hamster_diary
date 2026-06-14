@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สมุดบันทึกสัตว์เลี้ยง 🐾</title>
+<style>
+  :root{
+    --cream:#FFF8E8; --sage:#A8C686; --sky:#B8E3E9; --yellow:#F6D186; --brown:#5E4B3C;
+    --sage-d:#7DA456; --sky-d:#6FB8C2; --pink:#F4C0D1; --coral:#E8A87C; --lilac:#C8B6E2;
+    --card:#FFFEFB; --line:rgba(94,75,60,.14); --muted:#9A8B7C;
+    --soft:#FDF2DD;
+    --shadow:0 3px 0 rgba(168,198,134,.18), 0 4px 16px rgba(94,75,60,.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;color:var(--brown);
+    background:var(--cream);
+    background-image:radial-gradient(circle at 12% 8%, rgba(184,227,233,.30), transparent 38%),
+                     radial-gradient(circle at 88% 4%, rgba(246,209,134,.28), transparent 34%),
+                     radial-gradient(circle at 50% 120%, rgba(168,198,134,.22), transparent 45%);
+    background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Sukhumvit Set","Noto Sans Thai",sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 90px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    margin-bottom:18px;background:var(--card);border:1.5px solid var(--line);
+    border-radius:24px;padding:16px 20px;box-shadow:var(--shadow)}
+  h1{font-size:23px;margin:0;font-weight:700;letter-spacing:.2px}
+  .sub{font-size:13px;color:var(--muted);margin:4px 0 0;font-weight:500}
+  select,input,textarea,button{font-family:inherit;font-size:14px;color:var(--brown)}
+  select,input,textarea{
+    border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:9px 13px;width:100%;
+    outline:none;transition:border .15s,box-shadow .15s;
+  }
+  select:focus,input:focus,textarea:focus{border-color:var(--sage);box-shadow:0 0 0 3px rgba(168,198,134,.25)}
+  textarea{resize:vertical;min-height:56px}
+  label{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:5px}
+  .btn{
+    border:none;border-radius:999px;padding:9px 18px;font-weight:700;cursor:pointer;
+    background:var(--sage);color:#3a5021;transition:transform .1s,filter .15s,box-shadow .15s;
+    display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 0 var(--sage-d);
+  }
+  .btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--sage-d)}
+  .btn:hover{filter:brightness(1.03)}
+  .btn.ghost{background:var(--card);color:var(--brown);border:1.5px solid var(--line);box-shadow:0 3px 0 var(--line)}
+  .btn.ghost:active{box-shadow:0 1px 0 var(--line)}
+  .btn.sky{background:var(--sky);color:#1f5a63;box-shadow:0 3px 0 var(--sky-d)}
+  .btn.sky:active{box-shadow:0 1px 0 var(--sky-d)}
+  .btn.sm{padding:6px 14px;font-size:13px}
+  .tabs{display:flex;gap:5px;background:var(--soft);border:1.5px solid var(--line);border-radius:18px;padding:5px;margin-bottom:20px;overflow-x:auto}
+  .tab{flex:1;border:none;background:transparent;border-radius:13px;padding:9px 8px;cursor:pointer;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap;transition:all .15s}
+  .tab.active{background:var(--sage);color:#3a5021;box-shadow:0 2px 0 var(--sage-d)}
+  .card{background:var(--card);border-radius:20px;padding:16px 18px;box-shadow:var(--shadow);margin-bottom:14px;border:1.5px solid var(--line)}
+  .pet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+  .pet-card{cursor:pointer;border:2.5px solid transparent;transition:border .15s,transform .12s}
+  .pet-card:hover{transform:translateY(-2px)}
+  .pet-card.active{border-color:var(--sage)}
+  .pet-card.memo{background:#FBF6F0;border-left:6px solid var(--lilac)}
+  .pet-card.memo.active{border-color:var(--lilac)}
+  .memo-head{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--muted);margin:22px 0 12px}
+  .memo-head .line{flex:1;height:1.5px;background:var(--line);border-radius:2px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .row>div{flex:1;min-width:120px}
+  .flex{display:flex;align-items:center;gap:10px}
+  .between{justify-content:space-between}
+  .ico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;border:1.5px solid rgba(94,75,60,.06)}
+  .pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px}
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:18px}
+  .metric{background:var(--soft);border-radius:18px;padding:14px;text-align:center;border:1.5px solid var(--line)}
+  .metric .lbl{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:5px}
+  .metric .val{font-size:21px;font-weight:700;color:var(--brown)}
+  .del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:3px 5px;line-height:1;border-radius:10px;transition:background .15s}
+  .del:hover{background:var(--soft);color:var(--coral)}
+  .empty{text-align:center;padding:44px 16px;color:var(--muted)}
+  .empty .big{font-size:44px;margin-bottom:8px}
+  .barwrap{margin:8px 0}
+  .bar-bg{height:12px;background:rgba(94,75,60,.08);border-radius:999px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:999px}
+  .legend-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-top:1.5px solid var(--line)}
+  .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+  .timeline-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1.5px solid var(--line)}
+  .note{font-size:13px;color:var(--muted);margin:4px 0 0;font-weight:500}
+  .hidden{display:none}
+  .topbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .petbar{display:flex;align-items:center;gap:10px;background:var(--soft);border:1.5px solid var(--line);border-left:6px solid var(--sage);border-radius:18px;padding:11px 15px;margin-bottom:16px}
+  .remind-wrap{position:fixed;top:16px;right:16px;z-index:1000;width:330px;max-width:calc(100vw - 24px)}
+  .remind{background:#FFFBEF;border:1.5px solid var(--yellow);border-radius:18px;padding:13px 15px;box-shadow:0 10px 30px rgba(94,75,60,.20)}
+  .remind-row{display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;border-top:1.5px solid rgba(246,209,134,.5)}
+  .remind-row:hover{opacity:.75}
+  .remind-bell{position:fixed;top:16px;right:16px;z-index:1000;width:50px;height:50px;border-radius:50%;background:var(--yellow);border:1.5px solid #e6b94e;box-shadow:0 6px 18px rgba(94,75,60,.22);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;color:#7a5a12;transition:transform .1s}
+  .remind-bell:active{transform:scale(.94)}
+  .remind-badge{position:absolute;top:-5px;right:-5px;background:#E24B4A;color:#fff;font-size:11px;font-weight:700;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid var(--cream)}
+  .remind-x{background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:2px 4px;border-radius:8px}
+  .remind-x:hover{background:rgba(94,75,60,.08)}
+  .petbar .switch{margin-left:auto;width:auto;min-width:140px}
+  @media(max-width:480px){h1{font-size:20px}.wrap{padding:16px 12px 70px}}
+  .gbtn{display:inline-flex;align-items:center;gap:7px}
+  .avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;border:1.5px solid var(--line)}
+  #loginScreen{position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:20px;
+    background:var(--cream);
+    background-image:radial-gradient(circle at 12% 8%, rgba(184,227,233,.30), transparent 38%),
+                     radial-gradient(circle at 88% 4%, rgba(246,209,134,.28), transparent 34%),
+                     radial-gradient(circle at 50% 110%, rgba(168,198,134,.22), transparent 45%);}
+  .login-card{background:var(--card);border:1.5px solid var(--line);border-radius:24px;padding:34px 28px;max-width:360px;width:100%;text-align:center;box-shadow:0 12px 36px rgba(94,75,60,.12)}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div id="loginScreen" style="display:none">
+  <div class="login-card">
+    <div style="font-size:50px;line-height:1">🐾</div>
+    <h1 style="margin:10px 0 4px">สมุดบันทึกสัตว์เลี้ยง</h1>
+    <p style="color:var(--muted);margin:0 0 24px;font-size:14px">บันทึกกิจกรรม นัดหมาย และค่าใช้จ่ายของน้องๆ</p>
+    <button class="btn sky gbtn" style="width:100%;justify-content:center" onclick="signInGoogle()">
+      <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.3 5.1 29.4 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.3 5.1 29.4 3 24 3 16 3 9.1 7.6 6.3 14.7z"/><path fill="#4CAF50" d="M24 45c5.2 0 10-2 13.6-5.2l-6.3-5.3C29.2 36 26.7 37 24 37c-5.3 0-9.7-2.6-11.3-7l-6.5 5C9 40.4 15.9 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.5l6.3 5.3C41.4 36.3 45 30.7 45 24c0-1.2-.1-2.3-.4-3.5z"/></svg>
+      เข้าสู่ระบบด้วย Google</button>
+    <button class="btn ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="continueGuest()">ใช้งานต่อแบบไม่ล็อกอิน</button>
+    <p id="loginNote" style="font-size:11px;color:var(--muted);margin:18px 0 0;line-height:1.5"></p>
+  </div>
+</div>
+
+<div class="wrap" id="appWrap" style="display:none">
+  <header>
+    <div>
+      <h1>🌿 สมุดบันทึกสัตว์เลี้ยง</h1>
+      <p class="sub" id="petSub">บันทึกกิจกรรมและค่าใช้จ่ายของน้องๆ</p>
+    </div>
+    <div class="topbar">
+      <select id="petSwitch" class="hidden" style="width:auto;min-width:150px"></select>
+      <div id="authBox"></div>
+    </div>
+  </header>
+
+  <div id="reminder"></div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="pets">🐱 สัตว์เลี้ยง</button>
+    <button class="tab" data-tab="activities">📅 กิจกรรม</button>
+    <button class="tab" data-tab="appts">🔔 นัดหมาย</button>
+    <button class="tab" data-tab="expenses">🧾 ค่าใช้จ่าย</button>
+    <button class="tab" data-tab="summary">📊 สรุป</button>
+  </div>
+
+  <div id="view"></div>
+</div>
+
+<script>
+const SPECIES=[['🐶','หมา'],['🐱','แมว'],['🐰','กระต่าย'],['🐹','แฮมสเตอร์'],['🐦','นก'],['🐟','ปลา'],['🦜','นกแก้ว'],['🐾','อื่นๆ']];
+const SEX=[['','ไม่ระบุ'],['ผู้','♂ ผู้'],['เมีย','♀ เมีย']];
+const sexLabel=v=>({'ผู้':'♂ ผู้','เมีย':'♀ เมีย'}[v]||'');
+const BREEDS={
+  'หมา':['ปอมเมอเรเนียน','ชิวาวา','ชิสุ','พุดเดิ้ล','ไทยหลังอาน','ไทยบางแก้ว','โกลเด้น รีทรีฟเวอร์','ลาบราดอร์','ไซบีเรียน ฮัสกี้','ปั๊ก','บีเกิล','คอร์กี้','เฟรนช์ บูลด็อก','ชเนาเซอร์','ร็อตไวเลอร์','พันธุ์ผสม'],
+  'แมว':['ไทย/วิเชียรมาศ','โคราช (สีสวาด)','เปอร์เซีย','สก็อตติช โฟลด์','อเมริกัน ช็อตแฮร์','บริติช ช็อตแฮร์','เมนคูน','เบงกอล','เอ็กโซติก','สฟิงซ์','มันช์กิน','แร็กดอลล์','พันธุ์ผสม/แมวไทย'],
+  'กระต่าย':['เนเธอร์แลนด์ ดวอร์ฟ','ฮอลแลนด์ ลอป','ไลอ้อนเฮด','มินิเร็กซ์','อังโกร่า','เฟลมิช ไจแอนท์','พันธุ์ผสม'],
+  'แฮมสเตอร์':['ซีเรียน','แคมป์เบล','วินเทอร์ไวท์','โรโบรอฟสกี้','แฮมสเตอร์จีน'],
+  'นก':['หงส์หยก','ค็อกคาเทล','ฟอพัส','เลิฟเบิร์ด','ซันคอนัวร์','นกเขา'],
+  'นกแก้ว':['แอฟริกัน เกรย์','มาคอว์','อเมซอน','ริงเน็ก','ค็อกคาเทล','ซันคอนัวร์'],
+  'ปลา':['ปลากัด','ปลาทอง','หางนกยูง','หมอสี','คาร์ป (โค่ย)','ออสการ์'],
+  'อื่นๆ':[]
+};
+const ACTS=[
+  ['bath','อาบน้ำ / ตัดขน','💧','#6FB8C2'],
+  ['medicine','ป้อนยา','💊','#C8B6E2'],
+  ['vet','ไปหาหมอ','🩺','#E8A87C'],
+  ['vaccine','ฉีดวัคซีน','💉','#F4C0D1'],
+  ['nail','ตัดเล็บ','✂️','#7DA456'],
+  ['exercise','ออกกำลังกาย / เล่น','🎾','#F6D186'],
+  ['food','ให้อาหาร / น้ำ','🍚','#A8C686'],
+  ['weight','ชั่งน้ำหนัก','⚖️','#6FB8C2'],
+  ['other','อื่นๆ','📝','#9A8B7C'],
+];
+const EXPCATS=[
+  ['vet','ค่าหมอ','🩺','#E8A87C'],
+  ['medicine','ยา / อาหารเสริม','💊','#C8B6E2'],
+  ['food','อาหาร / ขนม','🍚','#A8C686'],
+  ['toy','ของเล่น / อุปกรณ์','🧸','#6FB8C2'],
+  ['grooming','ดูแลความสะอาด','🛁','#7DA456'],
+  ['insurance','ประกัน','🛡️','#F6D186'],
+  ['other','อื่นๆ','📦','#9A8B7C'],
+];
+
+let db = load();
+let pid = db.pets[0]?.id || null;
+let tab = 'pets';
+let forms = {pet:false, act:false, exp:false, appt:false};
+let memoForm = null;
+let editId = null;
+let apptEdit = null;
+let expEdit = null;
+
+function load(){
+  try{ const s=localStorage.getItem('petcare_db'); if(s){ const d=JSON.parse(s); if(!d.appts) d.appts=[]; return d; } }catch(e){}
+  return {pets:[], acts:[], exps:[], appts:[]};
+}
+function save(){ try{ localStorage.setItem('petcare_db', JSON.stringify(db)); }catch(e){} saveCloud(); }
+const uid=()=>Math.random().toString(36).slice(2)+Date.now().toString(36);
+const today=()=>new Date().toISOString().slice(0,10);
+const curMonth=()=>today().slice(0,7);
+const act=id=>ACTS.find(a=>a[0]===id)||ACTS[8];
+const cat=id=>EXPCATS.find(c=>c[0]===id)||EXPCATS[6];
+const money=n=>(parseFloat(n)||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function fmtDate(d){ if(!d) return ''; return new Date(d+'T00:00:00').toLocaleDateString('th-TH-u-ca-buddhist',{day:'numeric',month:'short',year:'numeric'}); }
+const TH_MONTHS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+// dropdown วัน/เดือน/ปี พ.ศ. — ภายในเก็บเป็น ISO (ค.ศ.) แต่ปีที่แสดงเป็น พ.ศ.
+function thaiDate(prefix, iso){
+  const cy=new Date().getFullYear();
+  const minY=cy-30, maxY=cy+5;
+  let dd='', mm='', yy='';
+  if(iso){ const p=iso.split('-'); yy=+p[0]; mm=+p[1]; dd=+p[2]; }
+  let dayO='<option value="">วัน</option>';
+  for(let d=1;d<=31;d++) dayO+=`<option value="${d}" ${d===dd?'selected':''}>${d}</option>`;
+  let monO='<option value="">เดือน</option>';
+  TH_MONTHS.forEach((m,i)=>monO+=`<option value="${i+1}" ${i+1===mm?'selected':''}>${m}</option>`);
+  let yrO='<option value="">ปี พ.ศ.</option>';
+  for(let y=maxY;y>=minY;y--) yrO+=`<option value="${y}" ${y===yy?'selected':''}>${y+543}</option>`;
+  return `<div class="flex" style="gap:6px">
+    <select id="${prefix}_dd" style="flex:1;min-width:0">${dayO}</select>
+    <select id="${prefix}_mm" style="flex:1.3;min-width:0">${monO}</select>
+    <select id="${prefix}_yy" style="flex:1.2;min-width:0">${yrO}</select>
+  </div>`;
+}
+function getThaiDate(prefix){
+  const d=document.getElementById(prefix+'_dd').value;
+  const m=document.getElementById(prefix+'_mm').value;
+  const y=document.getElementById(prefix+'_yy').value;
+  if(!d||!m||!y) return '';
+  return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+function ageMonths(bd){
+  if(!bd) return null;
+  const n=new Date(), b=new Date(bd);
+  let m=(n.getFullYear()-b.getFullYear())*12+n.getMonth()-b.getMonth();
+  if(n.getDate()<b.getDate()) m--;
+  return Math.max(0,m);
+}
+function ageMonths(bd, ref){
+  if(!bd) return null;
+  const n=ref?new Date(ref):new Date(), b=new Date(bd);
+  let m=(n.getFullYear()-b.getFullYear())*12+n.getMonth()-b.getMonth();
+  if(n.getDate()<b.getDate()) m--;
+  return Math.max(0,m);
+}
+function age(bd, ref){
+  const m=ageMonths(bd, ref);
+  if(m===null) return null;
+  if(m<1) return 'น้อยกว่า 1 เดือน';
+  if(m<12) return m+' เดือน';
+  const y=Math.floor(m/12), mo=m%12;
+  return mo? y+' ปี '+mo+' เดือน' : y+' ปี';
+}
+// อายุเทียบเท่าคน — สูตรต่างกันตามชนิด (อ้างอิงอัตราการเติบโต)
+function humanAge(bd, species, ref){
+  const m=ageMonths(bd, ref);
+  if(m===null || m<1) return null;
+  const y=m/12;
+  let h=null;
+  if(species==='หมา'){
+    h = y<=1 ? y*15 : y<=2 ? 15+(y-1)*9 : 24+(y-2)*5;
+  } else if(species==='แมว'){
+    h = y<=1 ? y*15 : y<=2 ? 15+(y-1)*9 : 24+(y-2)*4;
+  } else if(species==='กระต่าย'){
+    h = y<=1 ? y*20 : 20+(y-1)*6;          // อายุขัย ~10 ปี
+  } else if(species==='แฮมสเตอร์'){
+    h = y*28;                               // อายุขัย ~2.5–3 ปี โตเร็วมาก
+  } else if(species==='นก' || species==='นกแก้ว'){
+    h = y<=1 ? y*12 : 12+(y-1)*4;           // ประมาณคร่าวๆ
+  } else {
+    return null;                            // ปลา/อื่นๆ ไม่คำนวณ
+  }
+  return Math.round(h);
+}
+// ระยะเวลาที่อยู่ด้วยกัน (จากวันเกิด/วันรับเลี้ยง ถึงวันจากไป)
+function together(from, to){
+  if(!from || !to) return null;
+  const m=ageMonths(from, to);
+  if(m===null || m<1) return 'ไม่ถึง 1 เดือน';
+  if(m<12) return m+' เดือน';
+  const y=Math.floor(m/12), mo=m%12;
+  return mo? y+' ปี '+mo+' เดือน' : y+' ปี';
+}
+const curPet=()=>db.pets.find(p=>p.id===pid);
+const petActs=()=>db.acts.filter(a=>a.petId===pid).sort((a,b)=>b.date.localeCompare(a.date));
+const petExps=()=>db.exps.filter(e=>e.petId===pid).sort((a,b)=>b.date.localeCompare(a.date));
+const petAppts=()=>db.appts.filter(a=>a.petId===pid).sort((a,b)=>a.date.localeCompare(b.date));
+function daysUntil(d){
+  const t=new Date(today()+'T00:00:00'), x=new Date(d+'T00:00:00');
+  return Math.round((x-t)/86400000);
+}
+function countdown(d){
+  const n=daysUntil(d);
+  if(n<0) return {txt:`เลยกำหนด ${-n} วัน`, color:'#E24B4A'};
+  if(n===0) return {txt:'วันนี้', color:'#BA7517'};
+  if(n===1) return {txt:'พรุ่งนี้', color:'#BA7517'};
+  if(n<=7) return {txt:`อีก ${n} วัน`, color:'#7DA456'};
+  return {txt:`อีก ${n} วัน`, color:'#9A8B7C'};
+}
+const REMIND_DAYS=14;
+let notifySet=new Set();
+function dueItems(){
+  return db.appts.map(a=>({a,n:daysUntil(a.date),pet:db.pets.find(p=>p.id===a.petId)}))
+    .filter(x=>x.n<=REMIND_DAYS && x.pet)
+    .sort((x,y)=>x.n-y.n);
+}
+function goAppt(id){ pid=id; tab='appts'; render(); }
+let remindOpen=true;
+function closeRemind(){ remindOpen=false; renderReminder(); }
+function openRemind(){ remindOpen=true; renderReminder(); }
+function renderReminder(){
+  const el=document.getElementById('reminder'); if(!el) return;
+  const items=dueItems();
+  if(!items.length){ el.innerHTML=''; return; }
+  const overdue=items.filter(i=>i.n<0).length;
+
+  if(!remindOpen){
+    el.innerHTML=`<button class="remind-bell" onclick="openRemind()" aria-label="ดูนัดหมาย">🔔
+      <span class="remind-badge">${items.length}</span></button>`;
+    return;
+  }
+
+  const head = overdue
+    ? `⚠️ เลยกำหนด ${overdue} · ใกล้ถึงใน ${REMIND_DAYS} วัน`
+    : `🔔 นัดหมายใกล้ถึง (${items.length})`;
+  let h=`<div class="remind-wrap"><div class="remind"><div class="flex between" style="margin-bottom:2px">
+    <span style="font-weight:700;font-size:14px">${head}</span>
+    <button class="remind-x" onclick="closeRemind()" aria-label="ปิด">✕</button>
+  </div>`;
+  items.slice(0,4).forEach(({a,pet})=>{
+    const i=act(a.type), c=countdown(a.date);
+    h+=`<div class="remind-row" onclick="goAppt('${a.petId}')">
+      <span style="font-size:18px">${pet.emoji}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:13px">${esc(pet.name)} · ${i[1]}</div>
+        <div style="font-size:12px;color:var(--muted)">${i[2]} ${fmtDate(a.date)}</div>
+      </div>
+      <span class="pill" style="background:${c.color}22;color:${c.color}">${c.txt}</span>
+    </div>`;
+  });
+  if(items.length>4) h+=`<div style="font-size:12px;color:var(--muted);padding-top:7px;border-top:1.5px solid rgba(246,209,134,.5)">และอีก ${items.length-4} รายการ</div>`;
+  h+=`</div></div>`;
+  el.innerHTML=h;
+}
+function enableNotify(){
+  if(!('Notification' in window)){ alert('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน'); return; }
+  Notification.requestPermission().then(p=>{
+    if(p==='granted'){ localStorage.setItem('pc_notify','1'); notifyDue(); }
+    else alert('ไม่ได้รับอนุญาตให้แจ้งเตือน สามารถเปิดได้ในตั้งค่าเบราว์เซอร์');
+    render();
+  });
+}
+function notifyDue(){
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  dueItems().filter(x=>x.n>=0).forEach(({a,pet})=>{
+    if(notifySet.has(a.id)) return;
+    const i=act(a.type), c=countdown(a.date);
+    try{ new Notification(`🔔 นัดหมาย · ${pet.name}`, {body:`${i[1]} · ${fmtDate(a.date)} (${c.txt})`}); }catch(e){}
+    notifySet.add(a.id);
+  });
+}
+
+function petBar(){
+  const p=curPet();
+  if(!p) return '';
+  const isMemo=!!p.passed;
+  const ref=isMemo?p.passed:null;
+  const ha=p.bd?humanAge(p.bd,p.species,ref):null;
+  const ageLbl=p.bd?age(p.bd,ref):null;
+  const sw = db.pets.length>1
+    ? `<select class="switch" onchange="pid=this.value;render()">${db.pets.map(x=>`<option value="${x.id}" ${x.id===pid?'selected':''}>${x.passed?'🕊️ ':''}${x.emoji} ${esc(x.name)}</option>`).join('')}</select>`
+    : '';
+  const meta = isMemo
+    ? `${esc(p.species)}${p.sex?' · '+sexLabel(p.sex):''}${ageLbl?' · อายุตอนจากไป '+ageLbl+(ha?` (≈ ${ha} ปีคน)`:''):''}`
+    : `${esc(p.species)}${p.sex?' · '+sexLabel(p.sex):''}${p.bd?' · '+ageLbl+(ha?` (≈ ${ha} ปีคน)`:''):''}`;
+  return `<div class="petbar" style="${isMemo?'border-left-color:var(--lilac)':''}">
+    <span style="font-size:24px;${isMemo?'filter:grayscale(.3)':''}">${p.emoji}</span>
+    <div>
+      <div style="font-weight:700;font-size:15px">${esc(p.name)}${isMemo?' 🕊️':''}</div>
+      <div style="font-size:12px;color:var(--muted)">${meta}</div>
+    </div>
+    ${sw}
+  </div>`;
+}
+
+function render(){
+  const p=curPet();
+  if(p && p.bd){
+    const ref=p.passed||null;
+    const ha=humanAge(p.bd,p.species,ref);
+    const al=age(p.bd,ref);
+    if(p.passed){
+      document.getElementById('petSub').textContent=`${p.emoji} ${p.name} 🕊️ · อายุตอนจากไป ${al}${ha?` (≈ ${ha} ปีคน)`:''}`;
+    } else {
+      document.getElementById('petSub').textContent=`${p.emoji} ${p.name} · อายุ ${al}${ha?` (≈ ${ha} ปีคน)`:''}`;
+    }
+  } else {
+    document.getElementById('petSub').textContent = p ? `${p.emoji} ${p.name}${p.passed?' 🕊️':''}` : 'บันทึกกิจกรรมและค่าใช้จ่ายของน้องๆ';
+  }
+
+  const sw=document.getElementById('petSwitch');
+  if(db.pets.length>1){
+    sw.classList.remove('hidden');
+    sw.innerHTML=db.pets.map(p=>`<option value="${p.id}" ${p.id===pid?'selected':''}>${p.emoji} ${esc(p.name)}</option>`).join('');
+  } else sw.classList.add('hidden');
+
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
+  renderReminder();
+  const v=document.getElementById('view');
+  if(tab==='pets') v.innerHTML=viewPets();
+  else if(!p) v.innerHTML=noPet();
+  else if(tab==='activities') v.innerHTML=viewActs();
+  else if(tab==='appts') v.innerHTML=viewAppts();
+  else if(tab==='expenses') v.innerHTML=viewExps();
+  else if(tab==='summary') v.innerHTML=viewSummary();
+  bind();
+}
+
+function noPet(){
+  return `<div class="empty"><div class="big">⬅️</div><p>กรุณาเลือกหรือเพิ่มสัตว์เลี้ยงก่อน</p><button class="btn" onclick="go('pets')">ไปที่สัตว์เลี้ยง</button></div>`;
+}
+
+function petCard(p){
+  const isMemo = !!p.passed;
+
+  // โหมดแก้ไขข้อมูล
+  if(editId===p.id){
+    const spIdx = SPECIES.findIndex(s=>s[1]===p.species);
+    return `<div class="card pet-card active" onclick="event.stopPropagation()">
+      <div style="font-weight:700;margin-bottom:12px">✏️ แก้ไขข้อมูล ${esc(p.name)}</div>
+      <div class="row">
+        <div><label>ชื่อ *</label><input id="ep_name" value="${esc(p.name)}"></div>
+        <div><label>ชนิด</label><select id="ep_sp" onchange="onSpeciesChange('ep')">${SPECIES.map((s,i)=>`<option value="${i}" ${i===spIdx?'selected':''}>${s[0]} ${s[1]}</option>`).join('')}</select></div>
+      </div>
+      <div class="row">
+        <div><label>สายพันธุ์</label><div id="ep_breedwrap">${breedField('ep', p.species, p.breed||'')}</div></div>
+        <div><label>เพศ</label><select id="ep_sex">${SEX.map(s=>`<option value="${s[0]}" ${s[0]===(p.sex||'')?'selected':''}>${s[1]}</option>`).join('')}</select></div>
+        <div><label>วันเกิด</label>${thaiDate('epbd', p.bd||'')}</div>
+      </div>
+      <div style="margin-bottom:12px"><label>หมายเหตุ</label><textarea id="ep_note">${esc(p.note||'')}</textarea></div>
+      <div class="flex"><button class="btn sm" onclick="saveEditPet('${p.id}')">✓ บันทึก</button><button class="btn ghost sm" onclick="editId=null;render()">ยกเลิก</button></div>
+    </div>`;
+  }
+
+  const ref = isMemo ? p.passed : null;
+  const ha = p.bd ? humanAge(p.bd, p.species, ref) : null;
+  const ageLbl = p.bd ? age(p.bd, ref) : null;
+  let body = `<div class="card pet-card ${isMemo?'memo':''} ${p.id===pid?'active':''}" onclick="selectPet('${p.id}')">
+    <div class="flex between">
+      <div class="flex">
+        <span style="font-size:30px;${isMemo?'filter:grayscale(.3);opacity:.85':''}">${p.emoji}</span>
+        <div>
+          <div style="font-weight:700;font-size:16px">${esc(p.name)}${isMemo?' <span style="font-size:14px">🕊️</span>':''}</div>
+          <div style="font-size:12px;color:var(--muted)">${esc(p.species)}${p.sex?' · '+sexLabel(p.sex):''}${p.breed?' · '+esc(p.breed):''}</div>
+        </div>
+      </div>
+      <div class="flex" style="gap:2px">
+        <button class="del" onclick="event.stopPropagation();editPet('${p.id}')">✏️</button>
+        <button class="del" onclick="event.stopPropagation();delPet('${p.id}')">🗑</button>
+      </div>
+    </div>`;
+
+  if(isMemo){
+    const tog = together(p.bd, p.passed);
+    body += `<div class="note">🌈 จากไปเมื่อ ${fmtDate(p.passed)}</div>`;
+    if(ageLbl) body += `<div class="note">อายุตอนจากไป ${ageLbl}${ha?` (≈ ${ha} ปีคน)`:''}</div>`;
+    if(tog) body += `<div class="note">💛 อยู่ด้วยกัน ${tog}</div>`;
+  } else if(p.bd){
+    body += `<div class="note">🎂 อายุ ${ageLbl}${ha?` <span class="pill" style="background:var(--lilac);color:var(--brown);margin-left:4px">≈ ${ha} ปีคน</span>`:''}</div>`;
+  }
+  if(p.note) body += `<div class="note" style="font-style:italic">${esc(p.note)}</div>`;
+
+  // ปุ่ม / ฟอร์มบันทึกการจากไป
+  if(memoForm===p.id){
+    body += `<div onclick="event.stopPropagation()" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
+      <label>วันที่น้องจากไป</label>
+      ${thaiDate('memodate', p.passed||today())}
+      <div class="flex" style="margin-top:8px">
+        <button class="btn sm" style="background:var(--lilac);color:#4b3560;box-shadow:0 3px 0 #a98fc4" onclick="saveMemo('${p.id}')">✓ บันทึก</button>
+        ${isMemo?`<button class="btn ghost sm" onclick="unsetMemo('${p.id}')">↩ ยกเลิกสถานะ</button>`:''}
+        <button class="btn ghost sm" onclick="memoForm=null;render()">ปิด</button>
+      </div>
+    </div>`;
+  } else {
+    body += `<div style="margin-top:10px">
+      <button class="btn ghost sm" onclick="event.stopPropagation();memoForm='${p.id}';render()">🕊️ ${isMemo?'แก้ไขวันจากไป':'บันทึกการจากไป'}</button>
+    </div>`;
+  }
+  body += `</div>`;
+  return body;
+}
+
+function viewPets(){
+  let h='';
+  if(db.pets.length===0 && !forms.pet){
+    h+=`<div class="empty"><div class="big">🐾</div><p>ยังไม่มีสัตว์เลี้ยง เพิ่มน้องตัวแรกกันเลย</p><button class="btn" onclick="openForm('pet')">+ เพิ่มสัตว์เลี้ยง</button></div>`;
+    return h;
+  }
+  const living = db.pets.filter(p=>!p.passed);
+  const memo = db.pets.filter(p=>p.passed);
+
+  if(living.length){
+    h+='<div class="pet-grid">'+living.map(petCard).join('')+'</div>';
+  }
+  if(memo.length){
+    h+=`<div class="memo-head"><span class="line"></span>🌈 รำลึกถึง<span class="line"></span></div>`;
+    h+='<div class="pet-grid">'+memo.map(petCard).join('')+'</div>';
+  }
+
+  if(forms.pet){
+    h+=`<div class="card">
+      <div style="font-weight:700;margin-bottom:14px">เพิ่มสัตว์เลี้ยงใหม่</div>
+      <div class="row">
+        <div><label>ชื่อ *</label><input id="f_name" placeholder="ชื่อน้อง"></div>
+        <div><label>ชนิด</label><select id="f_sp" onchange="onSpeciesChange('f')">${SPECIES.map((s,i)=>`<option value="${i}">${s[0]} ${s[1]}</option>`).join('')}</select></div>
+      </div>
+      <div class="row">
+        <div><label>สายพันธุ์</label><div id="f_breedwrap">${breedField('f', SPECIES[0][1], '')}</div></div>
+        <div><label>เพศ</label><select id="f_sex">${SEX.map(s=>`<option value="${s[0]}">${s[1]}</option>`).join('')}</select></div>
+        <div><label>วันเกิด</label>${thaiDate('fbd','')}</div>
+      </div>
+      <div style="margin-bottom:12px"><label>หมายเหตุ (โรคประจำตัว อาการแพ้ ฯลฯ)</label><textarea id="f_note"></textarea></div>
+      <div class="flex"><button class="btn" onclick="addPet()">✓ บันทึก</button><button class="btn ghost" onclick="closeForm('pet')">ยกเลิก</button></div>
+    </div>`;
+  } else {
+    h+=`<button class="btn" onclick="openForm('pet')">+ เพิ่มสัตว์เลี้ยง</button>`;
+  }
+  return h;
+}
+
+function viewActs(){
+  const list=petActs();
+  let h=petBar()+`<div class="flex between" style="margin-bottom:14px">
+    <span style="font-size:13px;color:var(--muted)">${list.length} กิจกรรมของน้อง</span>
+    ${forms.act?'':'<button class="btn sm" onclick="openForm(\'act\')">+ บันทึกกิจกรรม</button>'}
+  </div>`;
+  if(forms.act){
+    h+=`<div class="card">
+      <div style="font-weight:700;margin-bottom:14px">บันทึกกิจกรรมใหม่</div>
+      <div class="row">
+        <div><label>ประเภท</label><select id="a_type">${ACTS.map(a=>`<option value="${a[0]}">${a[2]} ${a[1]}</option>`).join('')}</select></div>
+        <div><label>วันที่</label>${thaiDate('adate', today())}</div>
+        <div style="max-width:130px"><label>น้ำหนัก (kg)</label><input type="number" step="0.01" id="a_weight" placeholder="ไม่บังคับ"></div>
+      </div>
+      <div style="margin-bottom:12px"><label>รายละเอียด (อาการ ยาที่ได้ คลินิก ฯลฯ)</label><textarea id="a_note"></textarea></div>
+      <div class="flex"><button class="btn" onclick="addAct()">✓ บันทึก</button><button class="btn ghost" onclick="closeForm('act')">ยกเลิก</button></div>
+    </div>`;
+  }
+  if(list.length===0 && !forms.act){
+    h+=`<div class="empty"><div class="big">📅</div><p>ยังไม่มีกิจกรรม</p></div>`;
+  }
+  list.forEach(a=>{
+    const i=act(a.type);
+    h+=`<div class="card flex" style="align-items:flex-start">
+      <div class="ico" style="background:${i[3]}22">${i[2]}</div>
+      <div style="flex:1">
+        <div class="flex between">
+          <span style="font-weight:700">${i[1]}${a.weight?` <span class="pill" style="background:var(--sky);color:#1f5a63;margin-left:4px">⚖️ ${a.weight} kg</span>`:''}</span>
+          <div class="flex"><span style="font-size:12px;color:var(--muted)">${fmtDate(a.date)}</span><button class="del" onclick="delAct('${a.id}')">🗑</button></div>
+        </div>
+        ${a.note?`<div class="note">${esc(a.note)}</div>`:''}
+      </div>
+    </div>`;
+  });
+  return h;
+}
+
+function viewAppts(){
+  const list=petAppts();
+  const upcoming=list.filter(a=>daysUntil(a.date)>=0);
+  const overdue=list.filter(a=>daysUntil(a.date)<0);
+  let h=petBar()+`<div class="flex between" style="margin-bottom:14px">
+    <span style="font-size:13px;color:var(--muted)">${list.length} นัดหมาย</span>
+    ${forms.appt?'':'<button class="btn sm" onclick="openForm(\'appt\')">+ ตั้งนัดหมาย</button>'}
+  </div>`;
+  if(forms.appt){
+    h+=`<div class="card">
+      <div style="font-weight:700;margin-bottom:14px">ตั้งนัดหมายใหม่</div>
+      <div class="row">
+        <div><label>กิจกรรม</label><select id="ap_type">${ACTS.map(a=>`<option value="${a[0]}">${a[2]} ${a[1]}</option>`).join('')}</select></div>
+        <div><label>วันที่นัด</label>${thaiDate('apdate', today())}</div>
+      </div>
+      <div style="margin-bottom:12px"><label>รายละเอียด (คลินิก เวลา สิ่งที่ต้องเตรียม ฯลฯ)</label><textarea id="ap_note"></textarea></div>
+      <div class="flex"><button class="btn" onclick="addAppt()">✓ บันทึกนัด</button><button class="btn ghost" onclick="closeForm('appt')">ยกเลิก</button></div>
+    </div>`;
+  }
+  if(list.length===0 && !forms.appt){
+    h+=`<div class="empty"><div class="big">🔔</div><p>ยังไม่มีนัดหมาย</p><p style="font-size:13px">ตั้งนัดล่วงหน้า เช่น ฉีดวัคซีน หรือ นัดหมอ</p></div>`;
+  }
+  const card=a=>{
+    const i=act(a.type), c=countdown(a.date);
+    if(apptEdit===a.id){
+      return `<div class="card">
+        <div style="font-weight:700;margin-bottom:12px">✏️ แก้ไขนัดหมาย</div>
+        <div class="row">
+          <div><label>กิจกรรม</label><select id="ae_type">${ACTS.map(x=>`<option value="${x[0]}" ${x[0]===a.type?'selected':''}>${x[2]} ${x[1]}</option>`).join('')}</select></div>
+          <div><label>วันที่นัด</label>${thaiDate('aedate', a.date)}</div>
+        </div>
+        <div style="margin-bottom:12px"><label>รายละเอียด</label><textarea id="ae_note">${esc(a.note||'')}</textarea></div>
+        <div class="flex"><button class="btn sm" onclick="saveEditAppt('${a.id}')">✓ บันทึก</button><button class="btn ghost sm" onclick="apptEdit=null;render()">ยกเลิก</button></div>
+      </div>`;
+    }
+    return `<div class="card flex" style="align-items:flex-start">
+      <div class="ico" style="background:${i[3]}22">${i[2]}</div>
+      <div style="flex:1">
+        <div class="flex between">
+          <span style="font-weight:700">${i[1]}</span>
+          <span class="pill" style="background:${c.color}22;color:${c.color}">${c.txt}</span>
+        </div>
+        <div class="note">📆 ${fmtDate(a.date)}</div>
+        ${a.note?`<div class="note">${esc(a.note)}</div>`:''}
+        <div class="flex" style="margin-top:8px;flex-wrap:wrap">
+          <button class="btn sm" onclick="doneAppt('${a.id}')">✓ ทำแล้ว</button>
+          <button class="btn ghost sm" onclick="editAppt('${a.id}')">✏️ แก้ไข</button>
+          <button class="btn ghost sm" onclick="delAppt('${a.id}')">ลบนัด</button>
+        </div>
+      </div>
+    </div>`;
+  };
+  if(overdue.length){
+    h+=`<div style="font-size:12px;font-weight:700;color:#E24B4A;margin:6px 0 8px">⚠️ เลยกำหนดแล้ว</div>`;
+    h+=overdue.map(card).join('');
+  }
+  if(upcoming.length){
+    if(overdue.length) h+=`<div style="font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 8px">นัดที่กำลังจะถึง</div>`;
+    h+=upcoming.map(card).join('');
+  }
+  return h;
+}
+
+function viewExps(){
+  const list=petExps();
+  const cm=curMonth();
+  const mTotal=list.filter(e=>e.date.startsWith(cm)).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const aTotal=list.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  let h=petBar()+`<div class="metrics">
+    <div class="metric"><div class="lbl">เดือนนี้</div><div class="val">฿${money(mTotal)}</div></div>
+    <div class="metric"><div class="lbl">ทั้งหมด</div><div class="val">฿${money(aTotal)}</div></div>
+  </div>`;
+  h+=`<div class="flex between" style="margin-bottom:14px">
+    <span style="font-size:13px;color:var(--muted)">${list.length} รายการ</span>
+    ${forms.exp?'':'<button class="btn sky sm" onclick="openForm(\'exp\')">+ บันทึกค่าใช้จ่าย</button>'}
+  </div>`;
+  if(forms.exp){
+    h+=`<div class="card">
+      <div style="font-weight:700;margin-bottom:14px">บันทึกค่าใช้จ่ายใหม่</div>
+      <div class="row">
+        <div><label>หมวดหมู่</label><select id="e_cat">${EXPCATS.map(c=>`<option value="${c[0]}">${c[2]} ${c[1]}</option>`).join('')}</select></div>
+        <div><label>จำนวนเงิน (บาท)</label><input type="number" step="0.01" id="e_amt" placeholder="0.00"></div>
+      </div>
+      <div class="row">
+        <div><label>วันที่</label>${thaiDate('edate', today())}</div>
+        <div><label>หมายเหตุ</label><input id="e_note" placeholder="รายละเอียด"></div>
+      </div>
+      <div class="flex"><button class="btn sky" onclick="addExp()">✓ บันทึก</button><button class="btn ghost" onclick="closeForm('exp')">ยกเลิก</button></div>
+    </div>`;
+  }
+  if(list.length===0 && !forms.exp){
+    h+=`<div class="empty"><div class="big">🧾</div><p>ยังไม่มีรายการค่าใช้จ่าย</p></div>`;
+  }
+  list.forEach(e=>{
+    const c=cat(e.cat);
+    if(expEdit===e.id){
+      h+=`<div class="card">
+        <div style="font-weight:700;margin-bottom:12px">✏️ แก้ไขค่าใช้จ่าย</div>
+        <div class="row">
+          <div><label>หมวดหมู่</label><select id="ee_cat">${EXPCATS.map(x=>`<option value="${x[0]}" ${x[0]===e.cat?'selected':''}>${x[2]} ${x[1]}</option>`).join('')}</select></div>
+          <div><label>จำนวนเงิน (บาท)</label><input type="number" step="0.01" id="ee_amt" value="${e.amount}"></div>
+        </div>
+        <div class="row">
+          <div><label>วันที่</label>${thaiDate('eedate', e.date)}</div>
+          <div><label>หมายเหตุ</label><input id="ee_note" value="${esc(e.note||'')}"></div>
+        </div>
+        <div class="flex"><button class="btn sky sm" onclick="saveEditExp('${e.id}')">✓ บันทึก</button><button class="btn ghost sm" onclick="expEdit=null;render()">ยกเลิก</button></div>
+      </div>`;
+      return;
+    }
+    h+=`<div class="card flex">
+      <div class="ico" style="background:${c[3]}22">${c[2]}</div>
+      <div style="flex:1">
+        <div class="flex between">
+          <div class="flex" style="flex-wrap:wrap;gap:6px">
+            <span class="pill" style="background:${c[3]}22;color:var(--brown)">${c[1]}</span>
+            ${e.note?`<span style="font-size:13px;color:var(--muted)">${esc(e.note)}</span>`:''}
+          </div>
+          <div class="flex"><span style="font-weight:700">฿${money(e.amount)}</span>
+            <button class="del" onclick="editExp('${e.id}')">✏️</button>
+            <button class="del" onclick="delExp('${e.id}')">🗑</button>
+          </div>
+        </div>
+        <div class="note">${fmtDate(e.date)}</div>
+      </div>
+    </div>`;
+  });
+  return h;
+}
+
+function viewSummary(){
+  const acts=petActs(), exps=petExps();
+  const cm=curMonth();
+  const mExp=exps.filter(e=>e.date.startsWith(cm)).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const aExp=exps.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const mAct=acts.filter(a=>a.date.startsWith(cm)).length;
+  let h=petBar()+`<div class="metrics">
+    <div class="metric"><div class="lbl">ค่าใช้จ่ายเดือนนี้</div><div class="val">฿${money(mExp)}</div></div>
+    <div class="metric"><div class="lbl">กิจกรรมเดือนนี้</div><div class="val">${mAct} ครั้ง</div></div>
+    <div class="metric"><div class="lbl">ค่าใช้จ่ายทั้งหมด</div><div class="val">฿${money(aExp)}</div></div>
+  </div>`;
+
+  const nextAppts=petAppts().filter(a=>daysUntil(a.date)>=0).slice(0,1);
+  const od=petAppts().filter(a=>daysUntil(a.date)<0);
+  if(nextAppts.length || od.length){
+    const a=od.length?od[0]:nextAppts[0];
+    const i=act(a.type), c=countdown(a.date);
+    h+=`<div class="card flex" style="border-left:5px solid ${c.color};cursor:pointer" onclick="go('appts')">
+      <div class="ico" style="background:${i[3]}22">${i[2]}</div>
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--muted)">🔔 นัดหมายถัดไป</div>
+        <div style="font-weight:700">${i[1]} · ${fmtDate(a.date)}</div>
+      </div>
+      <span class="pill" style="background:${c.color}22;color:${c.color}">${c.txt}</span>
+    </div>`;
+  }
+
+  // น้ำหนัก — เรียงตามวันที่จากเก่าไปใหม่
+  const weights=acts.filter(a=>a.weight!=null).sort((a,b)=>a.date.localeCompare(b.date));
+  if(weights.length){
+    const last=weights[weights.length-1];
+    const prev=weights.length>1?weights[weights.length-2]:null;
+    let diffTxt='';
+    if(prev){
+      const d=last.weight-prev.weight;
+      const c=d>0?'#BA7517':d<0?'#6FB8C2':'var(--muted)';
+      const arrow=d>0?'▲':d<0?'▼':'•';
+      diffTxt=`<span class="pill" style="background:${c}22;color:${c};margin-left:6px">${arrow} ${Math.abs(d).toFixed(2)} kg</span>`;
+    }
+    const wmax=Math.max(...weights.map(w=>w.weight));
+    const wmin=Math.min(...weights.map(w=>w.weight));
+    const range=wmax-wmin||1;
+    h+=`<div class="card">
+      <div class="flex between" style="margin-bottom:10px">
+        <span style="font-weight:700">⚖️ น้ำหนักล่าสุด</span>
+        <span><span style="font-size:20px;font-weight:700">${last.weight} kg</span>${diffTxt}</span>
+      </div>`;
+    weights.slice(-6).forEach(w=>{
+      const pct=20+((w.weight-wmin)/range)*80;
+      h+=`<div class="flex between" style="padding:5px 0;border-top:1.5px solid var(--line)">
+        <span style="font-size:12px;color:var(--muted);width:90px;flex-shrink:0">${fmtDate(w.date)}</span>
+        <div class="bar-bg" style="flex:1;margin:0 10px"><div class="bar-fill" style="width:${pct}%;background:var(--sky-d)"></div></div>
+        <span style="font-size:13px;font-weight:700;width:62px;text-align:right">${w.weight} kg</span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+
+  const map={};
+  exps.forEach(e=>{ map[e.cat]=(map[e.cat]||0)+(parseFloat(e.amount)||0); });
+  const cats=EXPCATS.filter(c=>map[c[0]]>0);
+  if(cats.length){
+    const max=Math.max(...cats.map(c=>map[c[0]]));
+    h+=`<div class="card"><div style="font-weight:700;margin-bottom:12px">ค่าใช้จ่ายแยกตามหมวดหมู่</div>`;
+    cats.sort((a,b)=>map[b[0]]-map[a[0]]).forEach(c=>{
+      const val=map[c[0]], pct=aExp?Math.round(val/aExp*100):0;
+      h+=`<div class="barwrap">
+        <div class="flex between" style="margin-bottom:4px">
+          <span style="font-size:13px"><span class="dot" style="display:inline-block;background:${c[3]};margin-right:6px"></span>${c[1]}</span>
+          <span style="font-size:13px;font-weight:700">฿${money(val)} <span style="color:var(--muted);font-weight:400">(${pct}%)</span></span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${val/max*100}%;background:${c[3]}"></div></div>
+      </div>`;
+    });
+    h+=`</div>`;
+  } else {
+    h+=`<div class="empty"><p style="font-size:13px">ยังไม่มีข้อมูลค่าใช้จ่าย</p></div>`;
+  }
+
+  if(acts.length){
+    h+=`<div class="card"><div style="font-weight:700;margin-bottom:8px">กิจกรรมล่าสุด</div>`;
+    acts.slice(0,8).forEach(a=>{
+      const i=act(a.type);
+      h+=`<div class="timeline-item">
+        <span style="font-size:18px">${i[2]}</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:600">${i[1]}</div>${a.note?`<div class="note">${esc(a.note)}</div>`:''}</div>
+        <span style="font-size:12px;color:var(--muted);white-space:nowrap">${fmtDate(a.date)}</span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+  return h;
+}
+
+// actions
+function go(t){ tab=t; render(); }
+function selectPet(id){ pid=id; render(); }
+function openForm(k){ forms[k]=true; render(); }
+function closeForm(k){ forms[k]=false; render(); }
+
+function addPet(){
+  const name=document.getElementById('f_name').value.trim();
+  if(!name){ alert('กรุณาใส่ชื่อ'); return; }
+  const sp=SPECIES[+document.getElementById('f_sp').value];
+  const p={id:uid(),name,emoji:sp[0],species:sp[1],sex:document.getElementById('f_sex').value,breed:getBreed('f'),bd:getThaiDate('fbd'),note:document.getElementById('f_note').value.trim()};
+  db.pets.push(p); save(); pid=p.id; forms.pet=false; tab='activities'; render();
+}
+function delPet(id){
+  if(!confirm('ลบสัตว์เลี้ยงและข้อมูลทั้งหมด?')) return;
+  db.pets=db.pets.filter(p=>p.id!==id);
+  db.acts=db.acts.filter(a=>a.petId!==id);
+  db.exps=db.exps.filter(e=>e.petId!==id);
+  if(pid===id) pid=db.pets[0]?.id||null;
+  save(); render();
+}
+function breedField(prefix, species, cur){
+  cur=cur||'';
+  const list=BREEDS[species]||[];
+  const inList=list.includes(cur);
+  const showCustom = !!cur && !inList;
+  const opts=['<option value="">— เลือกสายพันธุ์ —</option>']
+    .concat(list.map(b=>`<option value="${esc(b)}" ${b===cur?'selected':''}>${esc(b)}</option>`))
+    .concat([`<option value="__custom__" ${showCustom?'selected':''}>🖊️ อื่นๆ (ระบุเอง)</option>`]).join('');
+  return `<select id="${prefix}_breed" onchange="onBreedChange('${prefix}')">${opts}</select>`
+    + `<input id="${prefix}_breedC" placeholder="พิมพ์สายพันธุ์" value="${showCustom?esc(cur):''}" style="margin-top:6px;${showCustom?'':'display:none'}">`;
+}
+function onSpeciesChange(prefix){
+  const species=SPECIES[+document.getElementById(prefix+'_sp').value][1];
+  document.getElementById(prefix+'_breedwrap').innerHTML=breedField(prefix, species, '');
+}
+function onBreedChange(prefix){
+  const sel=document.getElementById(prefix+'_breed');
+  const c=document.getElementById(prefix+'_breedC');
+  if(sel.value==='__custom__'){ c.style.display='block'; }
+  else { c.style.display='none'; c.value=''; }
+}
+function getBreed(prefix){
+  const sel=document.getElementById(prefix+'_breed');
+  if(!sel) return '';
+  if(sel.value==='__custom__') return (document.getElementById(prefix+'_breedC').value||'').trim();
+  return sel.value;
+}
+function editPet(id){ editId=id; memoForm=null; render(); }
+function saveEditPet(id){
+  const name=document.getElementById('ep_name').value.trim();
+  if(!name){ alert('กรุณาใส่ชื่อ'); return; }
+  const p=db.pets.find(x=>x.id===id);
+  if(p){
+    const sp=SPECIES[+document.getElementById('ep_sp').value];
+    p.name=name; p.emoji=sp[0]; p.species=sp[1];
+    p.breed=getBreed('ep');
+    p.sex=document.getElementById('ep_sex').value;
+    p.bd=getThaiDate('epbd');
+    p.note=document.getElementById('ep_note').value.trim();
+    save();
+  }
+  editId=null; render();
+}
+function saveMemo(id){
+  const d=getThaiDate('memodate');
+  if(!d){ alert('กรุณาเลือกวันที่'); return; }
+  const p=db.pets.find(x=>x.id===id);
+  if(p){ p.passed=d; save(); }
+  memoForm=null; render();
+}
+function unsetMemo(id){
+  const p=db.pets.find(x=>x.id===id);
+  if(p){ delete p.passed; save(); }
+  memoForm=null; render();
+}
+function addAct(){
+  if(!pid) return;
+  const d=getThaiDate('adate');
+  if(!d){ alert('กรุณาเลือกวันที่ให้ครบ'); return; }
+  const w=document.getElementById('a_weight').value;
+  db.acts.push({id:uid(),petId:pid,type:document.getElementById('a_type').value,date:d,note:document.getElementById('a_note').value.trim(),weight:w?parseFloat(w):null});
+  save(); forms.act=false; render();
+}
+function delAct(id){ db.acts=db.acts.filter(a=>a.id!==id); save(); render(); }
+function addAppt(){
+  if(!pid) return;
+  const d=getThaiDate('apdate');
+  if(!d){ alert('กรุณาเลือกวันที่นัดให้ครบ'); return; }
+  db.appts.push({id:uid(),petId:pid,type:document.getElementById('ap_type').value,date:d,note:document.getElementById('ap_note').value.trim()});
+  save(); forms.appt=false; render();
+}
+function delAppt(id){ db.appts=db.appts.filter(a=>a.id!==id); save(); render(); }
+function editAppt(id){ apptEdit=id; render(); }
+function saveEditAppt(id){
+  const d=getThaiDate('aedate');
+  if(!d){ alert('กรุณาเลือกวันที่นัดให้ครบ'); return; }
+  const a=db.appts.find(x=>x.id===id);
+  if(a){
+    a.type=document.getElementById('ae_type').value;
+    a.date=d;
+    a.note=document.getElementById('ae_note').value.trim();
+    save();
+  }
+  apptEdit=null; render();
+}
+function doneAppt(id){
+  const a=db.appts.find(x=>x.id===id);
+  if(a){
+    db.acts.push({id:uid(),petId:a.petId,type:a.type,date:a.date,note:a.note});
+    db.appts=db.appts.filter(x=>x.id!==id);
+    save();
+  }
+  render();
+}
+function addExp(){
+  if(!pid) return;
+  const amt=document.getElementById('e_amt').value;
+  if(!amt){ alert('กรุณาใส่จำนวนเงิน'); return; }
+  const d=getThaiDate('edate');
+  if(!d){ alert('กรุณาเลือกวันที่ให้ครบ'); return; }
+  db.exps.push({id:uid(),petId:pid,cat:document.getElementById('e_cat').value,amount:amt,date:d,note:document.getElementById('e_note').value.trim()});
+  save(); forms.exp=false; render();
+}
+function delExp(id){ db.exps=db.exps.filter(e=>e.id!==id); save(); render(); }
+function editExp(id){ expEdit=id; render(); }
+function saveEditExp(id){
+  const amt=document.getElementById('ee_amt').value;
+  if(!amt){ alert('กรุณาใส่จำนวนเงิน'); return; }
+  const d=getThaiDate('eedate');
+  if(!d){ alert('กรุณาเลือกวันที่ให้ครบ'); return; }
+  const e=db.exps.find(x=>x.id===id);
+  if(e){
+    e.cat=document.getElementById('ee_cat').value;
+    e.amount=amt;
+    e.date=d;
+    e.note=document.getElementById('ee_note').value.trim();
+    save();
+  }
+  expEdit=null; render();
+}
+
+function bind(){
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>go(t.dataset.tab));
+  document.getElementById('petSwitch').onchange=e=>{ pid=e.target.value; render(); };
+}
+
+// ========= Firebase + Google Auth =========
+// 👉 แทนที่ค่าด้านล่างด้วย config ของโปรเจกต์ Firebase ของคุณ
+//    (Firebase Console → Project settings → Your apps → SDK setup)
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+let fauth=null, fstore=null, fbReady=false, currentUser=null, cloudTimer=null, gateDismissed=false;
+const configOK = typeof firebase!=='undefined'
+  && firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('YOUR_');
+
+function gateVisible(){ return !currentUser && !gateDismissed; }
+function updateGate(){
+  const login=document.getElementById('loginScreen');
+  const wrap=document.getElementById('appWrap');
+  const note=document.getElementById('loginNote');
+  if(note) note.textContent = configOK ? '' : 'ยังไม่ได้ตั้งค่า Firebase — ปุ่ม Google จะใช้ได้เมื่อใส่ config และเปิดผ่านโดเมนที่อนุญาต';
+  if(gateVisible()){ login.style.display='flex'; wrap.style.display='none'; }
+  else { login.style.display='none'; wrap.style.display='block'; }
+}
+function continueGuest(){ gateDismissed=true; updateGate(); render(); }
+
+function initFirebase(){
+  if(!configOK){ updateGate(); renderAuth(); return; }
+  try{
+    firebase.initializeApp(firebaseConfig);
+    fauth=firebase.auth();
+    fstore=firebase.firestore();
+    fbReady=true;
+    fauth.onAuthStateChanged(u=>{
+      currentUser=u;
+      if(u){ gateDismissed=false; loadCloud(); }
+      else { gateDismissed=false; render(); }
+      updateGate();
+      renderAuth();
+    });
+  }catch(e){ console.warn('Firebase init failed:', e); fbReady=false; }
+  updateGate();
+  renderAuth();
+}
+function signInGoogle(){
+  if(!fbReady){ alert('ยังไม่ได้ตั้งค่า Firebase — ดูคำแนะนำในไฟล์ (บล็อก firebaseConfig)'); return; }
+  fauth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .catch(e=>alert('เข้าสู่ระบบไม่สำเร็จ: '+e.message));
+}
+function signOutGoogle(){ if(fbReady) fauth.signOut(); }
+function loadCloud(){
+  if(!fbReady || !currentUser) return;
+  fstore.collection('petcare').doc(currentUser.uid).get().then(doc=>{
+    if(doc.exists && doc.data() && doc.data().pets){
+      db=doc.data();
+      if(!db.appts) db.appts=[];
+      try{ localStorage.setItem('petcare_db', JSON.stringify(db)); }catch(e){}
+      pid = db.pets[0]?.id || pid;
+    } else {
+      saveCloud(); // ครั้งแรก: อัปโหลดข้อมูลในเครื่องขึ้นคลาวด์
+    }
+    render();
+  }).catch(e=>{ console.warn(e); render(); });
+}
+function saveCloud(){
+  if(!fbReady || !currentUser) return;
+  clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(()=>{
+    fstore.collection('petcare').doc(currentUser.uid).set(db).catch(e=>console.warn('sync failed', e));
+  }, 600);
+}
+function renderAuth(){
+  const el=document.getElementById('authBox'); if(!el) return;
+  if(currentUser){
+    const photo=currentUser.photoURL?`<img class="avatar" src="${currentUser.photoURL}" referrerpolicy="no-referrer" alt="">`:'';
+    el.innerHTML=`<div class="flex" style="gap:8px">${photo}
+      <button class="btn ghost sm" onclick="signOutGoogle()">ออกจากระบบ</button></div>`;
+  } else if(configOK){
+    el.innerHTML=`<button class="btn sky sm" onclick="gateDismissed=false;updateGate()">เข้าสู่ระบบ</button>`;
+  } else {
+    el.innerHTML=`<span style="font-size:11px;color:var(--muted)">โหมดออฟไลน์</span>`;
+  }
+}
+
+initFirebase();
+render();
+</script>
+</body>
+</html>
