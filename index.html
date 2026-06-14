@@ -213,6 +213,22 @@ let memoForm = null;
 let editId = null;
 let apptEdit = null;
 let expEdit = null;
+let actMonth = '';
+let expMonth = '';
+function monthsOf(list){ return [...new Set(list.map(x=>x.date.slice(0,7)))].filter(Boolean).sort().reverse(); }
+function monthLabelTH(ym){ const p=ym.split('-'); return TH_MONTHS[+p[1]-1]+' '+(+p[0]+543); }
+function monthFilterHTML(varName, cur, list){
+  const months=monthsOf(list);
+  if(months.length<1) return '';
+  return `<div class="flex" style="gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+    <span style="font-size:13px;color:var(--muted)">🔍 กรองตามเดือน</span>
+    <select onchange="${varName}=this.value;render()" style="width:auto;min-width:140px">
+      <option value="" ${cur===''?'selected':''}>ทั้งหมด</option>
+      ${months.map(ym=>`<option value="${ym}" ${cur===ym?'selected':''}>${monthLabelTH(ym)}</option>`).join('')}
+    </select>
+    ${cur?`<button class="btn ghost sm" onclick="${varName}='';render()">ล้าง</button>`:''}
+  </div>`;
+}
 
 function load(){
   try{ const s=localStorage.getItem('petcare_db'); if(s){ const d=JSON.parse(s); if(!d.appts) d.appts=[]; return d; } }catch(e){}
@@ -554,11 +570,14 @@ function viewPets(){
 }
 
 function viewActs(){
-  const list=petActs();
+  const all=petActs();
+  const list = actMonth ? all.filter(a=>a.date.startsWith(actMonth)) : all;
+  const countTxt = actMonth ? `${list.length} กิจกรรม (${monthLabelTH(actMonth)})` : `${all.length} กิจกรรมของน้อง`;
   let h=petBar()+`<div class="flex between" style="margin-bottom:14px">
-    <span style="font-size:13px;color:var(--muted)">${list.length} กิจกรรมของน้อง</span>
+    <span style="font-size:13px;color:var(--muted)">${countTxt}</span>
     ${forms.act?'':'<button class="btn sm" onclick="openForm(\'act\')">+ บันทึกกิจกรรม</button>'}
   </div>`;
+  h+=monthFilterHTML('actMonth', actMonth, all);
   if(forms.act){
     h+=`<div class="card">
       <div style="font-weight:700;margin-bottom:14px">บันทึกกิจกรรมใหม่</div>
@@ -572,7 +591,7 @@ function viewActs(){
     </div>`;
   }
   if(list.length===0 && !forms.act){
-    h+=`<div class="empty"><div class="big">📅</div><p>ยังไม่มีกิจกรรม</p></div>`;
+    h+=`<div class="empty"><div class="big">📅</div><p>${actMonth?'ไม่มีกิจกรรมในเดือนนี้':'ยังไม่มีกิจกรรม'}</p></div>`;
   }
   list.forEach(a=>{
     const i=act(a.type);
@@ -654,16 +673,22 @@ function viewAppts(){
 }
 
 function viewExps(){
-  const list=petExps();
+  const all=petExps();
   const cm=curMonth();
-  const mTotal=list.filter(e=>e.date.startsWith(cm)).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
-  const aTotal=list.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const mTotal=all.filter(e=>e.date.startsWith(cm)).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const aTotal=all.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const list = expMonth ? all.filter(e=>e.date.startsWith(expMonth)) : all;
+  const fTotal = list.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
   let h=petBar()+`<div class="metrics">
     <div class="metric"><div class="lbl">เดือนนี้</div><div class="val">฿${money(mTotal)}</div></div>
     <div class="metric"><div class="lbl">ทั้งหมด</div><div class="val">฿${money(aTotal)}</div></div>
   </div>`;
+  h+=monthFilterHTML('expMonth', expMonth, all);
+  const countTxt = expMonth
+    ? `${list.length} รายการ (${monthLabelTH(expMonth)}) · รวม ฿${money(fTotal)}`
+    : `${all.length} รายการ`;
   h+=`<div class="flex between" style="margin-bottom:14px">
-    <span style="font-size:13px;color:var(--muted)">${list.length} รายการ</span>
+    <span style="font-size:13px;color:var(--muted)">${countTxt}</span>
     ${forms.exp?'':'<button class="btn sky sm" onclick="openForm(\'exp\')">+ บันทึกค่าใช้จ่าย</button>'}
   </div>`;
   if(forms.exp){
@@ -681,7 +706,7 @@ function viewExps(){
     </div>`;
   }
   if(list.length===0 && !forms.exp){
-    h+=`<div class="empty"><div class="big">🧾</div><p>ยังไม่มีรายการค่าใช้จ่าย</p></div>`;
+    h+=`<div class="empty"><div class="big">🧾</div><p>${expMonth?'ไม่มีรายการในเดือนนี้':'ยังไม่มีรายการค่าใช้จ่าย'}</p></div>`;
   }
   list.forEach(e=>{
     const c=cat(e.cat);
